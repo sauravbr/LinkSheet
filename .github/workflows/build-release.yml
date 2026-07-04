@@ -1,14 +1,14 @@
-name: Build Release APK
+name: Build Debug APK
 
 on:
   push:
-    tags:
-      - 'v*'
-  workflow_dispatch: # Allows you to manually trigger the build from the GitHub Actions tab
+    branches:
+      - master
+  workflow_dispatch: # Allows you to manually trigger the build from the Actions tab
 
 jobs:
   build:
-    name: Build Release
+    name: Build Debug
     runs-on: ubuntu-latest
 
     steps:
@@ -31,15 +31,14 @@ jobs:
       - name: Grant Execute Permission to Gradlew
         run: chmod +x gradlew
 
-      # This builds the unsigned release APK. 
-      # If your build flavor setup requires a specific flavor task (like assembleProRelease), you can change this.
-      - name: Build Release APK
-        run: ./gradlew assembleRelease --stacktrace
+      # Changes from assembleRelease to assembleDebug to bypass release keys
+      - name: Build Debug APKs
+        run: ./gradlew assembleDebug --stacktrace
 
-      - name: Upload Release APK Artifact
+      - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: LinkSheet-Release-APK
-          path: app/build/outputs/apk/*/release/*.apk
+          name: LinkSheet-Debug-APKs
+          path: app/build/outputs/apk/**/*.apk
           retention-days: 7
           
